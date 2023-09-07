@@ -5,7 +5,6 @@ import { AuthContext } from "../authContext";
 
 const AdminDashboardPage = () => {
   const { dispatch } = React.useContext(AuthContext);
-
   const [videos, setVideos] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
