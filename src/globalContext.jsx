@@ -56,8 +56,7 @@ const GlobalProvider = ({ children }) => {
       value={{
         state,
         dispatch,
-      }}
-    >
+      }}>
       {children}
     </GlobalContext.Provider>
   );

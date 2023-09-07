@@ -5,6 +5,8 @@ import * as yup from "yup";
 import MkdSDK from "../utils/MkdSDK";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../authContext";
+import { GlobalContext } from "../globalContext";
+import SnackBar from "../components/SnackBar";
 
 const AdminLoginPage = () => {
   const schema = yup
@@ -14,7 +16,10 @@ const AdminLoginPage = () => {
     })
     .required();
 
+  const globalContext = React.useContext(GlobalContext);
+
   const { dispatch } = React.useContext(AuthContext);
+  const globalDispatch = globalContext.dispatch;
   const navigate = useNavigate();
   const {
     register,
@@ -28,19 +33,43 @@ const AdminLoginPage = () => {
   const onSubmit = async (data) => {
     let sdk = new MkdSDK();
     //TODO
+
+    try {
+      const response = await sdk.login(data.email, data.password, "admin");
+
+      if (response.token) {
+        const payload = {
+          token: response.token,
+          role: response.role,
+        };
+        dispatch({ type: "LOGIN", payload });
+        globalDispatch({
+          type: "SNACKBAR",
+          payload: { message: "logged in succesfully" },
+        });
+
+        navigate("/admin/dashboard");
+      } else {
+        setError("password", {
+          type: "manual",
+          message: "Invalid email or password",
+        });
+      }
+    } catch (error) {
+      // Handle any errors that occurred during the login request
+      console.error("Login error:", error);
+    }
   };
 
   return (
     <div className="w-full max-w-xs mx-auto">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-8 "
-      >
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-8 ">
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="email"
-          >
+            htmlFor="email">
             Email
           </label>
           <input
@@ -57,8 +86,7 @@ const AdminLoginPage = () => {
         <div className="mb-6">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="password"
-          >
+            htmlFor="password">
             Password
           </label>
           <input
@@ -81,6 +109,7 @@ const AdminLoginPage = () => {
           />
         </div>
       </form>
+      <SnackBar />
     </div>
   );
 };

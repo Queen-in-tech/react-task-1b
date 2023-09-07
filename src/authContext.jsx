@@ -14,8 +14,15 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
       //TODO
+      const { token, role } = action.payload;
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+
       return {
         ...state,
+        isAuthenticated: true,
+        token: token,
+        role: role,
       };
     case "LOGOUT":
       localStorage.clear();
@@ -46,6 +53,15 @@ const AuthProvider = ({ children }) => {
 
   React.useEffect(() => {
     //TODO
+
+    const checkTokenValidity = async () => {
+      const tokenIsValid = await sdk.check(state.role);
+      if (tokenIsValid.error) {
+        tokenExpireError(dispatch, "TOKEN_EXPIRED");
+      }
+    };
+
+    checkTokenValidity();
   }, []);
 
   return (
@@ -53,8 +69,7 @@ const AuthProvider = ({ children }) => {
       value={{
         state,
         dispatch,
-      }}
-    >
+      }}>
       {children}
     </AuthContext.Provider>
   );

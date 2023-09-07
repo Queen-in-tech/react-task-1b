@@ -5,6 +5,8 @@ import SnackBar from "./components/SnackBar";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 function renderRoutes(role) {
   switch (role) {
@@ -13,8 +15,11 @@ function renderRoutes(role) {
         <Routes>
           <Route
             path="/admin/dashboard"
-            element={<AdminDashboardPage />}
-          ></Route>
+            element={
+              <DndProvider backend={HTML5Backend}>
+                <AdminDashboardPage />
+              </DndProvider>
+            }></Route>
         </Routes>
       );
       break;
@@ -36,7 +41,7 @@ function Main() {
     <div className="h-full">
       <div className="flex w-full">
         <div className="w-full">
-          <div className="page-wrapper w-full py-10 px-5">
+          <div className="page-wrapper w-full ">
             {!state.isAuthenticated
               ? renderRoutes("none")
               : renderRoutes(state.role)}
