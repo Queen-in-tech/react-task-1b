@@ -58,14 +58,12 @@ const AdminDashboardPage = () => {
   };
 
   const handleRowReorder = useCallback((dragIndex, hoverIndex) => {
-    setOrder((prevOrder) =>
-      update(prevOrder, {
-        $splice: [
-          [dragIndex, 1],
-          [hoverIndex, 0, prevOrder[dragIndex]],
-        ],
-      })
-    );
+    setOrder((prevOrder) => {
+      const updatedOrder = [...prevOrder];
+      const [draggedItem] = updatedOrder.splice(dragIndex, 1); // Remove the dragged item
+      updatedOrder.splice(hoverIndex, 0, draggedItem);
+      return updatedOrder;
+    });
   }, []);
 
   return (

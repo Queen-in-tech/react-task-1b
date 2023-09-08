@@ -62,7 +62,7 @@ const AuthProvider = ({ children }) => {
     };
 
     checkTokenValidity();
-  }, []);
+  }, [tokenExpireError]);
 
   return (
     <AuthContext.Provider

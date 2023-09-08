@@ -5,7 +5,7 @@ const TableRow = ({ video, index, handleRowReorder }) => {
   const ref = useRef(null);
 
   const [{ handlerId }, drop] = useDrop({
-    accept: "row",
+    accept: "ROW",
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -45,24 +45,22 @@ const TableRow = ({ video, index, handleRowReorder }) => {
     },
   });
 
-  const [{ isDragging }, drag] = useDrag(
-    {
-      type: "row",
-      item: () => {
-        return { id: video.id, index };
-      },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    }[(video, index)]
-  );
+  const [{ isDragging }, drag] = useDrag({
+    type: "ROW",
+    item: () => {
+      return { id: video.id, index };
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
 
   drag(drop(ref));
 
   return (
     <tr
       className={`flex gap-7 items-center justify-center py-3 px-10 text-center border border-gray-400 rounded-lg text-gray-500 cursor-move ${
-        isDragging && "opacity-50"
+        isDragging && "opacity-70"
       }`}
       ref={ref}>
       <td>{video.id}</td>
